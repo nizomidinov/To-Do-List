@@ -61,7 +61,7 @@ function App() {
   }
 
   function removeTab(RemoveId, event) {
-    event.stopPropagation() //останавливает распространение, чтобы нажатие действовало только на <span>&times</span>
+    event.stopPropagation() //останавливает распространение, чтобы нажатие действовало только на  <span>&times</span>
     setTabs(prevTabs => prevTabs.filter(tab => tab.id !== RemoveId))
     setActiveTab(RemoveId - 1)
   }
