@@ -23,7 +23,6 @@ function App() {
   ])
   const [tabs, setTabs] = useState([])
   const [tabId, setTabId] = useState(0)
-  const [isIndexCrossed, setIsIndexCrossed] = useState([])
   const [isIconSwitch, setIsIconSwitch] = useState([])
   const [activeTab, setActiveTab] = useState(0)
 
@@ -140,7 +139,6 @@ function App() {
           <ul>
             {
               tasks.map((t, index) => {
-                const isTaskCrossed = isIndexCrossed.includes(index);//проверяет есть ли в массиве isIndexCrossed индекс строки на которую нажали
                 const iconSwitch = isIconSwitch.includes(index);
 
                 return (
