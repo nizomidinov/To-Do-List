@@ -5,25 +5,27 @@ function App() {
   const [tasks, setTasks] = useState([
     {
       name: "to walk",
-      // editedName: '',
-      isCrossed: false
+      editedName: '',
+      isCrossed: false,
+      isBeingEdited: false
     },
 
     {
       name: "to sleep",
-      // editedName: '',
-      isCrossed: false
+      editedName: '',
+      isCrossed: false,
+      isBeingEdited: false
     },
 
     {
       name: "to eat",
-      // editedName: '',
-      isCrossed: false
+      editedName: '',
+      isCrossed: false,
+      isBeingEdited: false
     }
   ])
   const [tabs, setTabs] = useState([])
   const [tabId, setTabId] = useState(0)
-  const [isIconSwitch, setIsIconSwitch] = useState([])
   const [activeTab, setActiveTab] = useState(0)
 
   function addTab() {
@@ -41,7 +43,9 @@ function App() {
     if (inputText == "") return;
     let newTask = {
       name: inputText,
-      editedName: ''
+      editedName: '',
+      isCrossed: false,
+      isBeingEdited: false
     }
     setInputText("")
     setTasks(prevTasks => {
@@ -65,23 +69,6 @@ function App() {
     setActiveTab(RemoveId - 1)
   }
 
-  // function clickForCross(index) {
-  //   console.log("clickForCross")
-  //   setTasks(prevTasks => {
-  //     let nextTasks = [...prevTasks]
-  //     let nextTask = nextTasks[index]
-  //     let status = nextTask.isCrossed
-  //     if (status) {
-  //       nextTask.isCrossed = false
-  //     }
-  //     else {
-  //       nextTask.isCrossed = true
-  //     }
-  //     // nextTask.isCrossed = nextTask.isCrossed ? false : true
-  //     console.log(nextTasks)
-  //     return nextTasks
-  //   })
-  // }
   function clickForCross(index) {
     setTasks(prevTasks =>
       prevTasks.map((task, i) =>
@@ -90,33 +77,19 @@ function App() {
     )
   }
 
-  function toggleEditMode(index) {
-    if (isIconSwitch.includes(index)) {
-      setIsIconSwitch(isIconSwitch.filter(i => i !== index))
-      setTasks(prevTasks => {
-        let nextTasks = [...prevTasks]
-        let nextTask = nextTasks[index]
-        nextTask.name = nextTask.editedName
-        return nextTasks
-      })
-    }
-    else {
-      setTasks(prevTasks =>
-        prevTasks.map((task, i) =>
-          i === index ? { ...task, editedName: task.name } : task
-        )
+  function changeTaskName(text, index) {
+    setTasks(prevTasks =>
+      prevTasks.map((task, i) => i === index ? { ...task, name: text } : task
       )
-      setIsIconSwitch([...isIconSwitch, index])
-    }
+    )
   }
 
-  function changeEditedName(text, i) {
-    setTasks(prevTasks => {
-      let nextTasks = [...prevTasks]
-      let nextTask = nextTasks[i]
-      nextTask.editedName = text
-      return nextTasks
-    })
+  function editTask(index) {
+    setTasks(prevTasks =>
+      prevTasks.map((task, i) =>
+        i === index ? { ...task, isBeingEdited: !task.isBeingEdited } : task
+      )
+    )
   }
 
   return (
@@ -139,20 +112,19 @@ function App() {
           <ul>
             {
               tasks.map((t, index) => {
-                const iconSwitch = isIconSwitch.includes(index);
-
                 return (
                   <li key={index}>
                     {
-                      iconSwitch ?
-                        <input type="text" id='editInput' value={t.editedName} onInput={(event) => changeEditedName(event.target.value, index)} /> :
+                      t.isBeingEdited ?
+                        <input type="text" id='editInput' value={t.name} onChange={(event) => changeTaskName(event.target.value, index)} />
+                        :
                         <p onClick={() => clickForCross(index)}
                           style={{ textDecoration: t.isCrossed ? 'line-through' : 'none', cursor: 'default' }} //если есть то isTaskCrossed = true и срабатывает условие
                         >{index + 1}. {t.name}</p>
                     }
                     <div className='buttonsUl'>
-                      <button type='button' onClick={() => toggleEditMode(index)}>
-                        {iconSwitch ? '✅' : '🖊️'}</button>
+                      <button type='button' onClick={() => editTask(index)}>
+                        {t.isBeingEdited ? '✅' : '🖊️'}</button>
                       <button type='button' onClick={() => removeTask(index)}>🗑️</button>
                     </div>
                   </li>
