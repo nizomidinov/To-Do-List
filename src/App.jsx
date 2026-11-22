@@ -24,9 +24,10 @@ function App() {
       isBeingEdited: false
     }
   ])
-  const [tabs, setTabs] = useState([])
-  const [tabId, setTabId] = useState(0)
+  const [tabs, setTabs] = useState([{ text: "New Tab", id: 0 }])
+  const [tabId, setTabId] = useState(1)
   const [activeTab, setActiveTab] = useState(0)
+  const [renameTab, setRenameTab] = useState(null)
 
   function addTab() {
     setTabs(prevTabs => {
@@ -92,6 +93,15 @@ function App() {
     )
   }
 
+  function changeTabName(text) {
+    console.log(text)
+    setTabs(prevTabs =>
+      prevTabs.map((tab) =>
+        tab.id === renameTab ? { ...tab, text: text } : tab
+      )
+    )
+  }
+
   return (
     <>
       <form action="">
@@ -101,10 +111,11 @@ function App() {
             <button className="tab-b" type='button' onClick={addTab}>+Tab</button>
             {
               tabs.map((tab, index) => (
-                <button key={index} className="tabAll" id={tab.id == activeTab ? 'active' : ''} onClick={() => setActiveTab(tab.id)} type='button'>{tab.text}
-                  <span className='cross' onClick={(event) => removeTab(tab.id, event)}>
+                <button key={index} className="tabAll" id={tab.id == activeTab ? 'active' : ''} onClick={() => setActiveTab(tab.id)} onDoubleClick={() => setRenameTab(tab.id)} type='button'>{renameTab == tab.id ? <input type="text" id='renameInput' value={tab.text} onChange={(event) => changeTabName(event.target.value)} /> : tab.text}
+                  {tabs.length > 1 && <span className='cross' onClick={(event) => removeTab(tab.id, event)}>
                     &times;
-                  </span>
+                  </span>}
+
                 </button>
               ))
             }
