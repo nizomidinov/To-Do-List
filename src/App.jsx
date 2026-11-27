@@ -7,21 +7,24 @@ function App() {
       name: "to walk",
       editedName: '',
       isCrossed: false,
-      isBeingEdited: false
+      isBeingEdited: false,
+      tabId: 0
     },
 
     {
       name: "to sleep",
       editedName: '',
       isCrossed: false,
-      isBeingEdited: false
+      isBeingEdited: false,
+      tabId: 0
     },
 
     {
       name: "to eat",
       editedName: '',
       isCrossed: false,
-      isBeingEdited: false
+      isBeingEdited: false,
+      tabId: 0
     }
   ])
   const [tabs, setTabs] = useState([{ text: "New Tab", id: 0 }])
@@ -46,7 +49,8 @@ function App() {
       name: inputText,
       editedName: '',
       isCrossed: false,
-      isBeingEdited: false
+      isBeingEdited: false,
+      tabId: activeTab
     }
     setInputText("")
     setTasks(prevTasks => {
@@ -122,7 +126,7 @@ function App() {
           </div>
           <ul>
             {
-              tasks.map((t, index) => {
+              tasks.filter(t => t.tabId === activeTab).map((t, index) => {
                 return (
                   <li key={index}>
                     {
@@ -146,7 +150,7 @@ function App() {
           <div className='inputButtons'>
             <input type="text" value={inputText} onInput={(event) => setInputText(event.target.value)} />
             <button className='lastButtons' type='button' onClick={() => addTask()}>📌</button>
-            <button className='lastButtons' type='button' onClick={() => setTasks([])}>💣</button>
+            <button className='lastButtons' type='button' onClick={() => setTasks(prevTasks(prev.filter(t => t.tabId !== activeTab)))}>💣</button>
           </div>
         </div>
       </form>
