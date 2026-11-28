@@ -147,7 +147,7 @@ input:focus {
 
 .lastButtons {
   border: none;
-  background-color: white;
+  background-color: transparent;
   padding: 5px;
   margin: 3px;
 }
@@ -175,4 +175,4 @@ input:focus {
   color: white;
 }
 
-/* Убрать IsIconSwitch и сделать это свойством*/
+/* Отступ сделать у инпутов всех */

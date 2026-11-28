@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.css';
 function App() {
   const [inputText, setInputText] = useState("")
@@ -31,7 +31,8 @@ function App() {
   const [tabId, setTabId] = useState(1)
   const [activeTab, setActiveTab] = useState(0)
   const [renameTab, setRenameTab] = useState(null)
-
+  const inputRef = useRef(null)
+  
   function addTab() {
     setTabs(prevTabs => {
       let newTab = {
@@ -43,7 +44,8 @@ function App() {
     setTabId(tId => tId + 1)
   }
 
-  function addTask() {
+  function addTask(event) {
+    event.preventDefault()
     if (inputText == "") return;
     let newTask = {
       name: inputText,
@@ -106,20 +108,28 @@ function App() {
     )
   }
 
+  useEffect(() => {
+    const handleClick = (event) => {
+      if (!inputRef.current?.contains(event.target)){
+        setRenameTab(null)
+      }
+    }
+    document.addEventListener('click', handleClick)
+  }, [])
+
   return (
     <>
-      <form action="">
+      <form action="" onSubmit={(event) => addTask(event)}>
         <div className='cont'>
           <h1>ToDo App {tasks.length}</h1>
           <div className="firstButtons">
             <button className="tab-b" type='button' onClick={addTab}>+Tab</button>
             {
               tabs.map((tab, index) => (
-                <button key={index} className="tabAll" id={tab.id == activeTab ? 'active' : ''} onClick={() => setActiveTab(tab.id)} onDoubleClick={() => setRenameTab(tab.id)} type='button'>{renameTab == tab.id ? <input type="text" id='renameInput' value={tab.text} onChange={(event) => changeTabName(event.target.value)} /> : tab.text}
+                <button key={index} className="tabAll" id={tab.id == activeTab ? 'active' : ''} onClick={() => setActiveTab(tab.id)} onDoubleClick={() => setRenameTab(tab.id)} type='button'>{renameTab == tab.id ? <input ref = {inputRef} type="text" id='renameInput' value={tab.text} onChange={(event) => changeTabName(event.target.value)} /> : tab.text}
                   {tabs.length > 1 && <span className='cross' onClick={(event) => removeTab(tab.id, event)}>
                     &times;
                   </span>}
-
                 </button>
               ))
             }
@@ -149,8 +159,8 @@ function App() {
           </ul>
           <div className='inputButtons'>
             <input type="text" value={inputText} onInput={(event) => setInputText(event.target.value)} />
-            <button className='lastButtons' type='button' onClick={() => addTask()}>📌</button>
-            <button className='lastButtons' type='button' onClick={() => setTasks(prevTasks(prev.filter(t => t.tabId !== activeTab)))}>💣</button>
+            <button className='lastButtons' type='submit'>📌</button>
+            <button className='lastButtons' type='button' onClick={() => setTasks((prevTasks) => prevTasks.filter(t => t.tabId !== activeTab))}>💣</button>
           </div>
         </div>
       </form>
